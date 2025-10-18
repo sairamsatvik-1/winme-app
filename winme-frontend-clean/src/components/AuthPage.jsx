@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import toast, { Toaster } from "react-hot-toast";
 import winmeImage from "../assets/image.png";
-import API_BASE from "./apiBase";
+import API_BASE from "../apiBase";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 const AuthPage = ({ setLoggedIn,setUser }) => {
    const [csrfToken, setCsrfToken] = useState(sessionStorage.getItem("csrfToken") || null);

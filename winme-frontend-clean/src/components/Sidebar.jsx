@@ -3,7 +3,7 @@ import { Plus, User, Archive, Trash2, X, ChevronRight, MoreVertical } from "luci
 import Toast from "./Toast";
 import logo from "../assets/image.png";
 import { LogOut, FileText, Lightbulb, BarChart3 } from "lucide-react";
-import API_BASE from "./apiBase";
+import API_BASE from "../apiBase";
 export default function Sidebar({
   debates,
   onSelectDebate,

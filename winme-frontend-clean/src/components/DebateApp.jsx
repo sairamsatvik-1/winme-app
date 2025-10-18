@@ -3,7 +3,7 @@ import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";
 import ChatWindow from "./ChatWindow";
 import Toast from "./Toast";
-import API_BASE from "./apiBase";
+import API_BASE from "../apiBase";
 const DebateApp  =({setLoggedIn,user,onLogout})=> {
   const [csrfToken, setCsrfToken] = useState(sessionStorage.getItem("csrfToken") || null);
 

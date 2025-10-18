@@ -5,7 +5,7 @@ import StatusBar from "./StatusBar";
 import Toast from "./Toast";
 import logo from "../assets/image.png";
 import RoundsStatus from "./RoundsStatus";
-import API_BASE from "./apiBase";
+import API_BASE from "../apiBase";
 export default function ChatWindow({ debate, messages, onSend, isNewChat, onNewChat }) {
  
   
