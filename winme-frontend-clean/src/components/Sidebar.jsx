@@ -3,7 +3,7 @@ import { Plus, User, Archive, Trash2, X, ChevronRight, MoreVertical } from "luci
 import Toast from "./Toast";
 import logo from "../assets/image.png";
 import { LogOut, FileText, Lightbulb, BarChart3 } from "lucide-react";
-
+import API_BASE from "./apiBase";
 export default function Sidebar({
   debates,
   onSelectDebate,
@@ -21,7 +21,7 @@ export default function Sidebar({
     if (csrfToken) return csrfToken;
   
     try {
-      const res = await fetch("/api/csrf-token", {
+      const res = await fetch(`${API_BASE}/api/csrf-token`, {
         credentials: "include",
       });
       const data = await res.json();
@@ -122,7 +122,7 @@ const fetchWithSession = async (url, options = {}) => {
         showToast("Csrf token error", "error");
       return;
       } 
-      const res = await fetchWithSession("http://localhost:5000/api/debate/rename", {
+      const res = await fetchWithSession(`${API_BASE}/api/debate/rename`, {
   method: "POST",
   headers: { "Content-Type": "application/json" ,"csrf-token":token},
   body: JSON.stringify({ debateId: renameTarget.id, name: renameValue }),

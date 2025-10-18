@@ -3,7 +3,7 @@ import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";
 import ChatWindow from "./ChatWindow";
 import Toast from "./Toast";
-
+import API_BASE from "./apiBase";
 const DebateApp  =({setLoggedIn,user,onLogout})=> {
   const [csrfToken, setCsrfToken] = useState(sessionStorage.getItem("csrfToken") || null);
 
@@ -11,7 +11,7 @@ const getCsrfToken = async () => {
   if (csrfToken) return csrfToken;
 
   try {
-    const res = await fetch("http://localhost:5000/api/csrf-token", { credentials: "include" });
+    const res = await fetch(`${API_BASE}/api/csrf-token`, { credentials: "include" });
     const data = await res.json();
     setCsrfToken(data.csrfToken);
     sessionStorage.setItem("csrfToken", data.csrfToken);
@@ -69,7 +69,7 @@ const fetchWithSession = async (url, options = {}) => {
  useEffect(() => {
   const checkSession = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/auth/session", {
+      const res = await fetch(`${API_BASE}/api/auth/session`, {
         credentials: "include",
       });
 
@@ -106,7 +106,7 @@ const fetchWithSession = async (url, options = {}) => {
   useEffect(() => {
     const fetchDebates = async () => {
       try {
-        const res = await fetchWithSession("http://localhost:5000/api/debate/list", {
+        const res = await fetchWithSession(`${API_BASE}/api/debate/list`, {
           credentials: "include",
         });
         if (!res.ok) throw new Error("Failed to fetch debates");
@@ -127,7 +127,7 @@ const fetchWithSession = async (url, options = {}) => {
     const fetchDebateDetails = async () => {
       try {
         if (!currentDebateId || currentDebateId === "null") return;
-        const res = await fetchWithSession(`http://localhost:5000/api/debate/${currentDebateId}`, {
+        const res = await fetchWithSession(`${API_BASE}/api/debate/${currentDebateId}`, {
           credentials: "include",
         });
         if (!res.ok) throw new Error("Failed to fetch debate");
@@ -204,7 +204,7 @@ const fetchWithSession = async (url, options = {}) => {
        const token = await getCsrfToken();
 if (!token) return setToast({ type: "error", text: "CSRF token unavailable." });
 
-        const res = await fetchWithSession("http://localhost:5000/api/debate/new", {
+        const res = await fetchWithSession(`${API_BASE}/api/debate/new`, {
           method: "POST",
           credentials: "include",
           headers: { "Content-Type": "application/json",  "csrf-token": token, },
@@ -222,7 +222,7 @@ if (!token) return setToast({ type: "error", text: "CSRF token unavailable." });
           [newId]: [{ role: "user", text }],
         }));
    
-        const chatRes = await fetchWithSession("http://localhost:5000/api/debate/chat", {
+        const chatRes = await fetchWithSession(`${API_BASE}/api/debate/chat`, {
           method: "POST",
           credentials: "include",
           headers: { "Content-Type": "application/json","csrf-token": token, },
@@ -261,7 +261,7 @@ if (!token) return setToast({ type: "error", text: "CSRF token unavailable." });
     const token = await getCsrfToken();
 if (!token) return setToast({ type: "error", text: "CSRF token unavailable." });
 
-      const res = await fetchWithSession("http://localhost:5000/api/debate/chat", {
+      const res = await fetchWithSession(`${API_BASE}/api/debate/chat`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" ,"csrf-token": token, },
@@ -316,7 +316,7 @@ if (reply.currentRound && reply.rounds) {
 
   const refreshSidebarAfterMessage = async (debateId) => {
     try {
-      const res = await fetchWithSession("http://localhost:5000/api/debate/list", {
+      const res = await fetchWithSession(`${API_BASE}/api/debate/list`, {
         credentials: "include",
       });
       if (!res.ok) return;
@@ -331,7 +331,7 @@ if (reply.currentRound && reply.rounds) {
     try {const token = await getCsrfToken();
 if (!token) return setToast({ type: "error", text: "CSRF token unavailable." });
 
-      const res = await fetchWithSession(`http://localhost:5000/api/debate/${id}`, {
+      const res = await fetchWithSession(`${API_BASE}/api/debate/${id}`, {
         method: "DELETE",
         credentials: "include",
           headers: {

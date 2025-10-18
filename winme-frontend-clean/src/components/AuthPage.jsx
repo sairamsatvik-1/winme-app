@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import toast, { Toaster } from "react-hot-toast";
 import winmeImage from "../assets/image.png";
+import API_BASE from "./apiBase";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 const AuthPage = ({ setLoggedIn,setUser }) => {
    const [csrfToken, setCsrfToken] = useState(sessionStorage.getItem("csrfToken") || null);
@@ -9,7 +10,7 @@ const AuthPage = ({ setLoggedIn,setUser }) => {
   const getCsrfToken = async () => {
     if (csrfToken) return csrfToken;
     try {
-      const res = await fetch("http://localhost:5000/api/csrf-token", { credentials: "include" });
+      const res = await fetch(`${API_BASE}/api/csrf-token`, { credentials: "include" });
       const data = await res.json();
       setCsrfToken(data.csrfToken);
       sessionStorage.setItem("csrfToken", data.csrfToken);
@@ -82,7 +83,7 @@ const handleSubmit = async (e) => {
     const token=await getCsrfToken();
     if(!token) return toast.error("csrf token error")
     if (isLogin && !forgotMode) {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
+      const res = await fetch(`${API_BASE}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json","csrf-token": token, },
         body: JSON.stringify({ email: formData.email, password: formData.password }),
@@ -104,7 +105,7 @@ const handleSubmit = async (e) => {
 
     if(!token) return toast.error("csrf token error")
       const display = formData.firstname[0] + formData.lastname[0];
-      const res = await fetch("http://localhost:5000/api/auth/send-otp", {
+      const res = await fetch(`${API_BASE}/api/auth/send-otp`, {
         method: "POST",credentials: "include",
         headers: { "Content-Type": "application/json" ,"csrf-token": token, },
         body: JSON.stringify({ ...formData, display }),  
@@ -136,7 +137,7 @@ const handleVerifyOtp = async () => {
   try {
     const token=await getCsrfToken();
     if(!token) return toast.error("csrf token error")
-    const res = await fetch("http://localhost:5000/api/auth/verify-otp", {
+    const res = await fetch(`${API_BASE}/api/auth/verify-otp`, {
       method: "POST",
       headers: { "Content-Type": "application/json" ,"csrf-token": token, },
       body: JSON.stringify({ email: otpEmail, otp }),
@@ -160,7 +161,7 @@ const handleResendOtp = async () => {
   const token=await getCsrfToken();
     if(!token) return toast.error("csrf token error")
   try {
-    const res = await fetch("http://localhost:5000/api/auth/resend-otp", {
+    const res = await fetch(`${API_BASE}/api/auth/resend-otp`, {
       method: "POST",
       headers: { "Content-Type": "application/json","csrf-token": token, },
       body: JSON.stringify({ email: otpEmail }), credentials: "include",
@@ -185,7 +186,7 @@ const handleForgotSubmit = async () => {
     console.log(token)
     if(!token) return toast.error("csrf token error")
     setIsForgot(true);
-    const res = await fetch("http://localhost:5000/api/auth/forget-password", {
+    const res = await fetch(`${API_BASE}/api/auth/forget-password`, {
       method: "POST",
       headers: { "Content-Type": "application/json","csrf-token": token, },
       body: JSON.stringify({ email: formData.email }),
@@ -221,7 +222,7 @@ const handleResendForgetOtp = async () => {
   try {
     const token=await getCsrfToken();
     if(!token) return toast.error("csrf token error")
-    const res = await fetch("http://localhost:5000/api/auth/resend-forget-otp", {
+    const res = await fetch(`${API_BASE}/api/auth/resend-forget-otp`, {
       method: "POST",
       headers: { "Content-Type": "application/json","csrf-token": token,  },
       body: JSON.stringify({ email: otpEmail }),  credentials: "include",
@@ -250,7 +251,7 @@ const handleResetPassword = async () => {
   try {
         const token=await getCsrfToken();
     if(!token) return toast.error("csrf token error")
-    const res = await fetch("http://localhost:5000/api/auth/reset-password", {
+    const res = await fetch(`${API_BASE}/api/auth/reset-password`, {
       method: "POST",
       headers: { "Content-Type": "application/json" ,"csrf-token": token, },
       body: JSON.stringify({ email: otpEmail, otp, newPassword: formData.newPassword }),
