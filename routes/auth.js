@@ -422,12 +422,16 @@ const newuser= {
   display: user.display,
   email: user.email
 };
-   
+    req.session.regenerate(err => {
+  if (err) return res.status(500).json({ error: 'session_error' });
+  
+  req.session.user = newuser;
+  
   // Generate a new CSRF token tied to the new session
   const newCsrfToken = req.csrfToken();
   
   res.json({ message: 'logged_in', user, csrfToken: newCsrfToken });
-
+});
 
 
   }catch(e){ res.status(500).json({ error:"server_error" }); }
