@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import AuthPage from "./components/AuthPage";
 import DebateApp from "./components/DebateApp";
 import Toast from "./components/Toast";
-
+import API_BASE from "./apiBase";
 export default function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -14,7 +14,7 @@ const getCsrfToken = async () => {
   if (csrfToken) return csrfToken;
 
   try {
-    const res = await fetch("http://localhost:5000/api/csrf-token", {
+    const res = await fetch(`${API_BASE}/api/csrf-token`, {
       credentials: "include",
     });
     const data = await res.json();
@@ -34,7 +34,7 @@ const getCsrfToken = async () => {
 }
     const checkSession = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/auth/session", {
+        const res = await fetch(`${API_BASE}/api/auth/session`, {
           credentials: "include",
         });
         if (res.ok) {
