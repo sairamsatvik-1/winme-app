@@ -8,17 +8,14 @@ import Forgotverification from "../models/forgotverify.js";
 import nodemailer from "nodemailer"; 
 const router=express.Router();
 import dotenv from "dotenv";
+
 dotenv.config();
+import sgMail from "@sendgrid/mail";
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 // --- Create reusable transporter ---
 console.log("emai",process.env.mail)
 console.log("pass",process.env.mail_pass)
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.mail,  // your gmail
-    pass: process.env.mail_pass   // app password (not your Gmail password)
-  }
-});
 // ----- Session -----
 
 
@@ -91,8 +88,11 @@ const expireAt =  Date.now()+5*60*60*1000;
     }
    
 const pending =otpverification;
-    await transporter.sendMail({
-      from: `"WinMe Debate" <${process.env.mail}>`,
+    const msg={
+      from: {
+        name: "WinMe Debate",
+        email: process.env.SENDER_EMAIL, // must be verified in SendGrid
+      },
       to: email,
       subject: "Your WinMe Debate OTP Code",
       html: `   <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9;">
@@ -116,7 +116,9 @@ const pending =otpverification;
        <p style="font-size:12px; color:#777;">If you didn’t request this, please ignore this email.</p>
      </div>
    `,
-    });
+    };
+     await sgMail.send(msg);
+    console.log("✅ OTP Email sent to", email);
     activity.count += 1;
     activity.lastSent = now;
     activity.expireAt = new Date(now.getTime() + 10*60*1000); // set expireAt for auto-deletion
@@ -165,8 +167,11 @@ router.post("/resend-otp", async (req, res) => {
   await pending.save();
 
   try {
-    await transporter.sendMail({
-      from: `"WinMe Debate" <${process.env.mail}>`,
+   const msg={
+      from: {
+        name: "WinMe Debate",
+        email: process.env.SENDER_EMAIL, // must be verified in SendGrid
+      },
       to: email,
       subject: "Your WinMe Debate OTP Code (Resent)",
       html:  `   <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9;">
@@ -190,7 +195,9 @@ router.post("/resend-otp", async (req, res) => {
        <p style="font-size:12px; color:#777;">If you didn’t request this, please ignore this email.</p>
      </div>
    `,
-    });
+    };
+     await sgMail.send(msg);
+    console.log("✅ OTP Email sent to", email);
     activity.count += 1;
     activity.lastSent = new Date();
     activity.expireAt = new Date(Date.now() + 10*60*1000); // set expireAt for auto-deletion
@@ -261,8 +268,11 @@ router.post("/forget-password", async(req,res)=>{
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const otpexpired = new Date(now.getTime() + 5 * 60 * 1000);
 const expireAt = new Date(now.getTime() + 60 * 60 * 1000);
-    await transporter.sendMail({
-      from: `"WinMe Debate" <${process.env.mail}>`,
+    const msg={
+      from: {
+        name: "WinMe Debate",
+        email: process.env.SENDER_EMAIL, // must be verified in SendGrid
+      },
       to: email,
       subject: "Your WinMe Debate Password Reset OTP",
       html: `
@@ -287,7 +297,9 @@ const expireAt = new Date(now.getTime() + 60 * 60 * 1000);
           <p style="font-size:12px; color:#777;">If you didn’t request this, please ignore this email.</p>
         </div>
       `
-    });
+    };
+     await sgMail.send(msg);
+    console.log("✅ OTP Email sent to", email);
     await Forgotverification.findOneAndUpdate(
       { email },
       { otp,otpexpired,expireAt },
@@ -299,7 +311,7 @@ const expireAt = new Date(now.getTime() + 60 * 60 * 1000);
     Factivity.count += 1;
     await Factivity.save();
     res.json({ message:"otp_sent" });
-  }catch(e){ res.status(500).json({ error:"server_error" }); }
+  }catch(err){  console.error("SendGrid Error:", err.response ? err.response.body : err);res.status(500).json({ error:"server_error" }); }
 });
 // Verify OTP and reset password
 router.post("/reset-password", async(req,res)=>{
@@ -349,8 +361,11 @@ router.post("/resend-forget-otp", async(req,res)=>{
     const expireAt=new Date(now.getTime() + 60*60*1000)
     const lastSent = Date.now();
 
-    await transporter.sendMail({
-      from: `"WinMe Debate <${process.env.mail}>"`,
+    const msg={
+      from: {
+        name: "WinMe Debate",
+        email: process.env.SENDER_EMAIL, // must be verified in SendGrid
+      },
       to: email,
       subject: "Your WinMe Debate Password Reset OTP (Resent)",
       html: `
@@ -376,7 +391,9 @@ router.post("/resend-forget-otp", async(req,res)=>{
           <p style="font-size:12px; color:#777;">If you didn’t request this, please ignore this email.</p>
         </div>
       `
-    });
+    };
+     await sgMail.send(msg);
+    console.log("✅ OTP Email sent to", email);
      await Forgotverification.findOneAndUpdate(
       { email },
       { otp,otpexpired,expireAt },
@@ -405,16 +422,12 @@ const newuser= {
   display: user.display,
   email: user.email
 };
-    req.session.regenerate(err => {
-  if (err) return res.status(500).json({ error: 'session_error' });
-  
-  req.session.user = newuser;
-  
+   
   // Generate a new CSRF token tied to the new session
   const newCsrfToken = req.csrfToken();
   
   res.json({ message: 'logged_in', user, csrfToken: newCsrfToken });
-});
+
 
 
   }catch(e){ res.status(500).json({ error:"server_error" }); }
