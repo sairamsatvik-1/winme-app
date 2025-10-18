@@ -128,6 +128,7 @@ const handleSubmit = async (e) => {
        return toast.error(data.error || "Signup failed");
            }    }
   } catch {
+    console.log(err);
     return toast.error("Server error"); // return added
   }
 };
