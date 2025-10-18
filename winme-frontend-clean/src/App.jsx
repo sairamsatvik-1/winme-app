@@ -68,7 +68,7 @@ const getCsrfToken = async () => {
   
 const handleLogout = async () => {
    try{const token = await getCsrfToken();
- const res= await fetch("http://localhost:5000/api/auth/logout", { 
+ const res= await fetch(`${API_BASE}/api/auth/logout`, { 
     credentials: "include",}
   )
   sessionStorage.removeItem("csrfToken");
