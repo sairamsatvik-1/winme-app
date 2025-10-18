@@ -10,6 +10,8 @@ const router=express.Router();
 import dotenv from "dotenv";
 dotenv.config();
 // --- Create reusable transporter ---
+console.log("emai",process.env.mail)
+console.log("pass",process.env.mail_pass)
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
