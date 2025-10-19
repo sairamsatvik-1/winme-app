@@ -24,20 +24,22 @@ useEffect(() => {
   if ((!messages || messages.length === 0) && isNewChat) {
     setDisplayedText(""); // reset before typing
     let index = 0;
-
-    const typeChar = () => {
-      if (index < fullText.length) {
-        setDisplayedText((prev) => prev + fullText.charAt(index));
-        index++;
-        typingTimeoutRef.current = setTimeout(typeChar, 150);
-      }
-    };
-
-    typeChar();
-
-    // Cleanup on unmount or before next typing
-    return () => clearTimeout(typingTimeoutRef.current);
+    clearInterval(typingTimeoutRef.current); // clear any previous typing
+    typingTimeoutRef.current = setInterval(() => {
+      setDisplayedText((prev) => {
+        if (index < fullText.length) {
+          const next = prev + fullText.charAt(index);
+          index++;
+          return next;
+        } else {
+          clearInterval(typingTimeoutRef.current);
+          return prev;
+        }
+      });
+    }, 150);
   }
+
+  return () => clearInterval(typingTimeoutRef.current);
 }, [isNewChat]);
 
 
