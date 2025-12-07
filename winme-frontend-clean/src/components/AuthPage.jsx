@@ -433,6 +433,10 @@ const handleResetPassword = async () => {
       >
         Resend OTP
       </button>
+        <p className="text-xs text-gray-400 text-center mt-2">
+  If you don’t see the email, check your <span className="font-semibold">Spam</span> /
+  <span className="font-semibold">Promotions</span> folder at the bottom.
+</p>
 
       <p
         className="text-sm text-indigo-400 hover:underline cursor-pointer"
@@ -576,6 +580,11 @@ const handleResetPassword = async () => {
                     >
                       Resend OTP
                     </button>
+                     <p className="text-xs text-gray-400 text-center mt-2">
+  If you don’t see the email, check your <span className="font-semibold">Spam</span> /
+  <span className="font-semibold">Promotions</span> folder at the bottom.
+</p>
+
                     <button
                       onClick={() => setOtpMode(false)}
                       className="text-sm text-indigo-400 hover:underline cursor-pointer"
