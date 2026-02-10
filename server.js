@@ -29,12 +29,11 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 // ✅ enable CORS (required for frontend)
+const isProd = process.env.NODE_ENV === "production";
+
 app.use(
   cors({
-    origin:
-      process.env.NODE_ENV === "production"
-        ? true // allow same-origin in production
-        : "http://localhost:5173",
+    origin: isProd ? false : "http://localhost:5173",
     credentials: true,
   })
 );
