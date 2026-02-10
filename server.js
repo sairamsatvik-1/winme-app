@@ -133,7 +133,7 @@ app.get("/api/debate/:debateId", ensureAuth,async (req, res) => {
 // Use debate routes
 app.use("/api/debate", debateRoutes);
 // Create new debate (New Chat)
-app.post("/api/debate/new",  async (req, res) => {
+app.post("/api/debate/new", ensureAuth, async (req, res) => {
   const { topic = "", stance = "" } = req.body; // optional
   try {
     const debate = new Debate({
