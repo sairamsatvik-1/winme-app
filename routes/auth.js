@@ -14,8 +14,7 @@ import sgMail from "@sendgrid/mail";
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 // --- Create reusable transporter ---
-console.log("emai",process.env.mail)
-console.log("pass",process.env.mail_pass)
+
 // ----- Session -----
 
 
