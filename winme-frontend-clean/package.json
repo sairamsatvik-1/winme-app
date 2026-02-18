@@ -21,8 +21,6 @@
     "react-router-dom": "^7.13.0",
     "remark-gfm": "^4.0.1",
 
-    "react-router-dom": "^7.9.4",
-
     "winme-app": "file:.."
   },
   "devDependencies": {
