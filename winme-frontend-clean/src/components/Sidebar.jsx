@@ -13,10 +13,14 @@ export default function Sidebar({
   user,
   setLoggedIn,
   onLogout,
+<<<<<<< HEAD
   setShowArchived,
   fetchArchivedDebates,
   onArchiveDebate,
   onShowAnalysis,
+=======
+
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
 }) {
   const [csrfToken, setCsrfToken] = useState(sessionStorage.getItem("csrfToken") || null);
   
@@ -76,6 +80,7 @@ export default function Sidebar({
     if (type === "new") onNewDebate(), showToast("Started New Debate");
     else if (type === "rules") setShowRules(true);
     else if (type === "tips") setShowTips(true);
+<<<<<<< HEAD
     else if (type === "analysis"){
       onShowAnalysis();
     }
@@ -84,6 +89,9 @@ export default function Sidebar({
   fetchArchivedDebates();
 }
 
+=======
+    else if (type === "analysis") showToast("Analysis feature coming soon!", "info");
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
   };
 
   // ✅ Close menu if clicked outside
@@ -155,9 +163,14 @@ const fetchWithSession = async (url, options = {}) => {
   return (
     <>
       <div
+<<<<<<< HEAD
   className={`${open ? "w-50" : "w-13"} h-screen min-h-[100dvh] relative flex flex-col bg-[#1a1a1a] text-gray-200 transition-all duration-300 border-r border-gray-800 overflow-hidden`}
 
  onMouseEnter={() => !open && setHovered(true)}
+=======
+        className={`${open ? "w-50" : "w-13"} relative flex flex-col bg-[#1a1a1a] text-gray-200 transition-all duration-300 border-r border-gray-800`}
+        onMouseEnter={() => !open && setHovered(true)}
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
         onMouseLeave={() => !open && setHovered(false)}
       >
         {!open && (
@@ -229,8 +242,11 @@ const fetchWithSession = async (url, options = {}) => {
             { icon: FileText, label: "Rules", type: "rules" },
             { icon: Lightbulb, label: "Tips", type: "tips" },
             { icon: BarChart3, label: "Analysis", type: "analysis" },
+<<<<<<< HEAD
             { icon: Archive, label: "Archived", type: "archived" },
 
+=======
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
           ].map((opt) => (
             <div key={opt.type} className="relative flex justify-center w-full group z-10">
               <button
@@ -329,6 +345,7 @@ const fetchWithSession = async (url, options = {}) => {
                               Rename
                             </button>
                             <button
+<<<<<<< HEAD
   className="block w-full text-left text-sm px-3 py-1.5 hover:bg-gray-800 text-yellow-400"
   onClick={(e) => {
     e.stopPropagation();
@@ -340,6 +357,8 @@ const fetchWithSession = async (url, options = {}) => {
 </button>
 
                             <button
+=======
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
                               className="block w-full text-left text-sm px-3 py-1.5 text-red-400 hover:bg-gray-800"
                               onClick={(e) => {
                                 e.stopPropagation();

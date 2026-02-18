@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 import Groq from "groq-sdk";
 import dotenv from "dotenv";
@@ -5,6 +6,9 @@ dotenv.config();
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
+=======
+import fetch from "node-fetch";
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
 function extractJsonIfPresent(text) {
   const match = text.match(/\{[\s\S]*\}/); // find first {...} block
   if (match) {
@@ -59,6 +63,7 @@ Example responses:
 23. you don't made any arguments or debate points, you only respond to user messages and ask for topic and stance of debate.
 
 Tone: ruthless, cold, assertive, aggressive, authoritative, intimidating.
+<<<<<<< HEAD
 Formatting (MANDATORY):
 "Provide response in markdown format. Use headers for sections, bullet points for lists. Ensure the response is suitable for rendering in a chat interface with dark theme styling."
 - Use headings (##, ###) for sections.
@@ -67,6 +72,8 @@ Formatting (MANDATORY):
 - Use **italics** for punch lines or analogies when needed.
 - Add a blank line between sections.
 
+=======
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
 `;
 
 // export async function generalChat(userMsg, generalMessages) {
@@ -113,6 +120,7 @@ export async function generalChat(userMsg, generalMessages) {
   generalMessages.push({ role: "user", content: userMsg });
 
   try {
+<<<<<<< HEAD
      const model = process.env.GENERAL_MODEL || "llama-3.1-70b-versatile";
 
     const completion = await groq.chat.completions.create({
@@ -124,6 +132,25 @@ export async function generalChat(userMsg, generalMessages) {
 
     const reply = completion.choices?.[0]?.message?.content || "…";
 
+=======
+    const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        messages: generalMessages,
+        temperature: 0
+      })
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(`HTTP ${res.status}: ${JSON.stringify(data)}`);
+
+    const reply = data.choices?.[0]?.message?.content || "…";
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
 
     // Extract debate intent if JSON is present
     let debateIntent = null;
@@ -141,6 +168,10 @@ export async function generalChat(userMsg, generalMessages) {
 
   } catch (err) {
    
+<<<<<<< HEAD
     throw { error: "ai_error", service: "general", message: "Failed to get AI response. Please retry." ,err};
+=======
+    throw { error: "ai_error", service: "general", message: "Failed to get AI response. Please retry." };
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
   }
 }

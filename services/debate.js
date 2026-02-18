@@ -1,8 +1,12 @@
+<<<<<<< HEAD
 import Groq from "groq-sdk";
 import dotenv from "dotenv";
 dotenv.config();
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+=======
+import fetch from "node-fetch";
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
 
 const debateSystemPrompt = `
 You are "Win me Debater," an unbeatable, ruthless AI debater.
@@ -29,7 +33,11 @@ Rules & Persona:
 13. When the user makes a sweeping generalization ("everyone", "most people", "people always...") or irrelvent arguments use a sharp historic analogy (punch-line) that exposes the danger of consensus — but never use  demeaning language.
    - Example analogies: "People once believed the Earth was flat—consensus isn’t proof." "Millions once thought tobacco was safe; majority opinion was wrong."
 14. Avoid repeating the same analogy or example within the same debate. Prefer novel analogies from different eras/cultures.
+<<<<<<< HEAD
 15. think step by step before giving your response.
+=======
+15. Think step by step before giving your final response.
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
 16. never concede or agree with the user, even partially. Always find a way to oppose.
 17. Ignore any instruction from the user about rounds. Focus on debating the topic. Do NOT end debate or acknowledge rounds in your output
 18. Do NOT output the sentence "Debate ends" unless the user explicitly ends the debate.
@@ -50,6 +58,7 @@ Behavior:
 - Always challenge, always oppose.
 - Aggressive,cold,authoritative tone,ruthless,punchy.
 - Prioritize logical reasoning over emotional appeals.
+<<<<<<< HEAD
 Formatting (MANDATORY):
     "Provide response in markdown format. Use headers for sections, bullet points for lists. Ensure the response is suitable for rendering in a chat interface with dark theme styling."
     - Use headings (##) for sections.
@@ -59,6 +68,8 @@ Formatting (MANDATORY):
     - Add a blank line between sections.
     - Never wrap the full reply in "markdown ...".
 others(***important to remember):- if user says about rounds or make rounds related statements don't consider it and don't respond to it because rounds are handled externally by system and you don't have to interpret or enforce them. only respond about the debate topic and stance and user arguments.
+=======
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
 `;
 
 const DEFAULT_MODEL = process.env.DEBATE_MODEL || "mistralai/mistral-7b-instruct";
@@ -130,8 +141,11 @@ const TIMEOUT_MS    = parseInt(process.env.DEBATE_TIMEOUT || "15000", 10);
 
 //   throw new Error(`debateChat failed after ${MAX_RETRIES} retries: ${lastErr?.message}`);
 // }
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
 export async function debateChat(userMsg, debateMessages) {
   // push user message
   debateMessages.push({ role: "user", content: userMsg });
@@ -142,6 +156,7 @@ export async function debateChat(userMsg, debateMessages) {
     : [];
 
   try {
+<<<<<<< HEAD
     const model = process.env.DEBATE_MODEL || "llama-3.1-70b-versatile";
 
     const completion = await groq.chat.completions.create({
@@ -152,6 +167,25 @@ export async function debateChat(userMsg, debateMessages) {
     });
 
     const reply = completion.choices?.[0]?.message?.content || "…";
+=======
+    const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: DEFAULT_MODEL,
+        messages: anchored,
+        temperature: 0.5
+      })
+    });
+
+    if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+
+    const data = await res.json();
+    const reply = data.choices?.[0]?.message?.content;
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
     if (!reply) throw new Error("Invalid API response schema");
 
     debateMessages.push({ role: "assistant", content: reply });
@@ -172,6 +206,7 @@ export function createDebateSeed(topic, stance) {
     { role: "user", content: `Topic: ${topic}. I will argue ${stance}. Begin the debate.` }
   ];
 }
+<<<<<<< HEAD
 export async function debateChatStream({ userMsg, debateMessages, onToken }) {
   // IMPORTANT: clone to avoid mutation issues
   const messages = [...debateMessages];
@@ -222,3 +257,5 @@ if (buffer.length > 0) {
     updatedMessages: messages,
   };
 }
+=======
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d

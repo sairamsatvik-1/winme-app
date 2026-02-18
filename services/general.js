@@ -48,6 +48,7 @@ Example responses:
 Final instruction: Only respond in JSON format when both topic and stance are provided by user or taken by you does reply any other words with json. Otherwise, reply ruthlessly, forcing clarity.
 
 Tone: ruthless, cold, assertive, aggressive, authoritative, intimidating.
+<<<<<<< HEAD
 Formatting (MANDATORY):
 "Provide response in markdown format. Use headers for sections, bullet points for lists. Ensure the response is suitable for rendering in a chat interface with dark theme styling."
 - Use headings (##) for sections.
@@ -56,6 +57,8 @@ Formatting (MANDATORY):
 - Use **italics** for punch lines or analogies when needed.
 - Add a blank line between sections.
 
+=======
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
 `;
 
 // ----------- Messages Array -------------

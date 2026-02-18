@@ -1,9 +1,14 @@
+<<<<<<< HEAD
 import React, { useState, useEffect,useRef } from "react";
+=======
+import React, { useState, useEffect } from "react";
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
 import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";
 import ChatWindow from "./ChatWindow";
 import Toast from "./Toast";
 import API_BASE from "../apiBase";
+<<<<<<< HEAD
 import AnalysisPopup from "./AnalysisPopup";
 
 async function streamDebateReply({ debateId, message, csrfToken, onToken }) {
@@ -95,12 +100,31 @@ const [analysisData, setAnalysisData] = useState(null);
       setToast({ type: "error", text: "CSRF token fetch failed" });
     }
   };
+=======
+const DebateApp  =({setLoggedIn,user,onLogout})=> {
+  const [csrfToken, setCsrfToken] = useState(sessionStorage.getItem("csrfToken") || null);
+
+const getCsrfToken = async () => {
+  if (csrfToken) return csrfToken;
+
+  try {
+    const res = await fetch(`${API_BASE}/api/csrf-token`, { credentials: "include" });
+    const data = await res.json();
+    setCsrfToken(data.csrfToken);
+    sessionStorage.setItem("csrfToken", data.csrfToken);
+    return data.csrfToken;
+  } catch (err) {
+    setToast({ type: "error", text: "CSRF token fetch failed" });
+  }
+};
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [debates, setDebates] = useState([]);
   const [currentDebateId, setCurrentDebateId] = useState(null);
   const [messagesByDebate, setMessagesByDebate] = useState({});
   const [toast, setToast] = useState(null);
+<<<<<<< HEAD
  
   // ✅ Return current debate object safely
   const currentDebate = () => {
@@ -134,6 +158,39 @@ const [analysisData, setAnalysisData] = useState(null);
       return null;
     }
   };
+=======
+
+  // ✅ Return current debate object safely
+  const currentDebate = () => {
+    const d = debates.find((d) => d._id === currentDebateId || d.id === currentDebateId);
+    if (!d) return null;
+    return { ...d, status: d.debateStatus || d.status };
+  };
+const fetchWithSession = async (url, options = {}) => {
+  try {
+    const res = await fetch(url, {
+      ...options,
+      credentials: "include",
+    });
+
+    // If session expired → handle globally
+    if (res.status === 401 || res.status === 403) {
+      sessionStorage.removeItem("csrfToken");
+       setToast({ type: "error", text: "Session expired. Please log in again." });
+      setTimeout(() => {
+      setLoggedIn(false);
+      },1200)
+      
+     return null;
+    }
+
+    return res;
+  } catch (err) {
+    setToast({ type: "error", text: "Network error" });
+    return null;
+  }
+};
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
 
 
   // ✅ Restore current debate after refresh
@@ -143,6 +200,7 @@ const [analysisData, setAnalysisData] = useState(null);
   }, []);
 
   // ✅ Persist current debateId in localStorage
+<<<<<<< HEAD
   useEffect(() => {
     const checkSession = async () => {
       try {
@@ -278,6 +336,42 @@ setShowArchivedPopup(false);
     setToast({ type: "error", text: "Failed to unarchive debate." });
   }
 };
+=======
+ useEffect(() => {
+  const checkSession = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/api/auth/session`, {
+        credentials: "include",
+      });
+
+      if (!res.ok) {
+        sessionStorage.removeItem("csrfToken");
+        setToast({ type: "error", text: "Session expired. Please log in again." });
+        setTimeout(() => {
+        
+          setLoggedIn(false);
+        }, 5000);
+      }
+    } catch (err) {
+      sessionStorage.removeItem("csrfToken");
+      setToast({ type: "error", text: "Session expired. Please log in again." });
+      setTimeout(() => {
+        setUser(null);
+        setLoggedIn(false);
+      }, 1200);
+    }
+
+    // Store debate ID for reload persistence
+    if (currentDebateId) {
+      sessionStorage.setItem("currentDebateId", currentDebateId);
+    } else {
+      sessionStorage.setItem("currentDebateId", "null");
+    }
+  };
+
+  checkSession();
+}, [currentDebateId]);
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
 
 
   // ✅ Fetch all debates on mount
@@ -291,13 +385,22 @@ setShowArchivedPopup(false);
         const data = await res.json();
         setDebates(data);
       } catch (err) {
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
         setToast({ type: "error", text: `Failed to fetch debates ${err}` });
       }
     };
     fetchDebates();
+<<<<<<< HEAD
     fetchArchivedDebates();
   }, []);
+=======
+  }, []);
+
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
   // ✅ Fetch single debate messages when debate changes
   useEffect(() => {
     if (!currentDebateId || currentDebateId === "null") return;
@@ -349,6 +452,7 @@ setShowArchivedPopup(false);
           [currentDebateId]: formattedMessages,
         }));
         if (debate.debateStatus === "end" && debate.judgeResult) {
+<<<<<<< HEAD
           setMessagesByDebate((prev) => ({
             ...prev,
             [currentDebateId]: [
@@ -362,6 +466,21 @@ setShowArchivedPopup(false);
         }
       } catch (err) {
 
+=======
+  setMessagesByDebate((prev) => ({
+    ...prev,
+    [currentDebateId]: [
+      ...(prev[currentDebateId] || formattedMessages),
+      {
+        role: "judge",
+        text: `🧑‍⚖️ **Judge's Decision:** ${debate.judgeResult}`,
+      },
+    ],
+  }));
+}
+      } catch (err) {
+        
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
         setToast({ type: "error", text: "Could not load debate." });
       }
     };
@@ -369,7 +488,10 @@ setShowArchivedPopup(false);
     fetchDebateDetails();
   }, [currentDebateId]);
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
   // ✅ Send message (existing + new debate)
   const sendMessage = async (debateId, text) => {
     if (!text.trim()) {
@@ -380,13 +502,22 @@ setShowArchivedPopup(false);
     // 🆕 Start new debate
     if (!debateId) {
       try {
+<<<<<<< HEAD
         const token = await getCsrfToken();
         if (!token) return setToast({ type: "error", text: "CSRF token unavailable." });
+=======
+       const token = await getCsrfToken();
+if (!token) return setToast({ type: "error", text: "CSRF token unavailable." });
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
 
         const res = await fetchWithSession(`${API_BASE}/api/debate/new`, {
           method: "POST",
           credentials: "include",
+<<<<<<< HEAD
           headers: { "Content-Type": "application/json", "csrf-token": token, },
+=======
+          headers: { "Content-Type": "application/json",  "csrf-token": token, },
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
           body: JSON.stringify({ message: text }),
         });
 
@@ -400,19 +531,32 @@ setShowArchivedPopup(false);
           ...prev,
           [newId]: [{ role: "user", text }],
         }));
+<<<<<<< HEAD
 
         const chatRes = await fetchWithSession(`${API_BASE}/api/debate/chat`, {
           method: "POST",
           credentials: "include",
           headers: { "Content-Type": "application/json", "csrf-token": token, },
+=======
+   
+        const chatRes = await fetchWithSession(`${API_BASE}/api/debate/chat`, {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json","csrf-token": token, },
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
           body: JSON.stringify({ debateId: newId, message: text }),
         });
 
         if (chatRes.ok) {
           const reply = await chatRes.json();
           if (reply.roundsChanged && reply.rounds) {
+<<<<<<< HEAD
             setToast({ type: "info", text: `Rounds changed to ${reply.rounds}` });
           }
+=======
+  setToast({ type: "info", text: `Rounds changed to ${reply.rounds}` });
+}
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
           const aiText = reply.text || reply.reply || reply.message || "…";
           setMessagesByDebate((prev) => ({
             ...prev,
@@ -424,7 +568,11 @@ setShowArchivedPopup(false);
           setToast({ type: "error", text: "Chat failed, debate removed." });
         }
       } catch (err) {
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
         setToast({ type: "error", text: "Error creating debate." });
       }
       return;
@@ -437,6 +585,7 @@ setShowArchivedPopup(false);
     }));
 
     try {
+<<<<<<< HEAD
   const token = await getCsrfToken();
   if (!token) return setToast({ type: "error", text: "CSRF token unavailable." });
 
@@ -547,6 +696,62 @@ setMessagesByDebate((prev) => {
 } catch (err) {
   setToast({ type: "error", text: "Failed to send message." });
 }
+=======
+    const token = await getCsrfToken();
+if (!token) return setToast({ type: "error", text: "CSRF token unavailable." });
+
+      const res = await fetchWithSession(`${API_BASE}/api/debate/chat`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" ,"csrf-token": token, },
+        body: JSON.stringify({ debateId, message: text }),
+      });
+
+      if (!res.ok) throw new Error("Chat API failed");
+      const reply = await res.json();
+      let aiText = reply.text || reply.reply || reply.message || "…";
+       if (reply.roundsChanged && reply.rounds) {
+  setToast({ type: "info", text: `Rounds changed to ${reply.rounds}` });
+}
+      if (reply.debateMessages && reply.debateMessages.length >= 3) {
+        const thirdMsg = reply.debateMessages[2];
+        if (thirdMsg.role === "assistant" && thirdMsg.text?.trim() === "<s>") {
+          aiText = "Make your argument. I will never concede.";
+        }
+      }
+// ✅ If the debate just ended, include judge's final result
+if (reply.debateStatus === "end" && reply.judgeResult) {
+  setMessagesByDebate((prev) => ({
+    ...prev,
+    [debateId]: [
+      ...(prev[debateId] || []),
+      { role: "ai", text: aiText },
+      { role: "judge", text: reply.judgeResult },  // 👈 separate role
+    ],
+  }));
+} else {
+  setMessagesByDebate((prev) => ({
+    ...prev,
+    [debateId]: [...(prev[debateId] || []), { role: "ai", text: aiText }],
+  }));
+}
+
+if (reply.currentRound && reply.rounds) {
+  setDebates((prev) =>
+    prev.map((d) =>
+      (d._id || d.id) === currentDebateId
+        ? { ...d, currentRound: reply.currentRound, rounds: reply.rounds }
+        : d
+    )
+  );
+}
+
+      refreshSidebarAfterMessage(debateId);
+    } catch (err) {
+      
+      setToast({ type: "error", text: "Failed to send message." });
+    }
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
   };
 
   const refreshSidebarAfterMessage = async (debateId) => {
@@ -558,22 +763,38 @@ setMessagesByDebate((prev) => {
       const data = await res.json();
       setDebates(data.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)));
     } catch (err) {
+<<<<<<< HEAD
       setToast({ type: "error", text: "Error refresh debate." });
+=======
+       setToast({ type: "error", text: "Error refresh debate." });
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
     }
   };
 
   const deleteDebate = async (id) => {
+<<<<<<< HEAD
     try {
       const token = await getCsrfToken();
       if (!token) return setToast({ type: "error", text: "CSRF token unavailable." });
+=======
+    try {const token = await getCsrfToken();
+if (!token) return setToast({ type: "error", text: "CSRF token unavailable." });
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
 
       const res = await fetchWithSession(`${API_BASE}/api/debate/${id}`, {
         method: "DELETE",
         credentials: "include",
+<<<<<<< HEAD
         headers: {
           "Content-Type": "application/json",
           "csrf-token": token, // <-- include CSRF
         },
+=======
+          headers: {
+        "Content-Type": "application/json",
+        "csrf-token": token, // <-- include CSRF
+      },
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
       });
       if (!res.ok) throw new Error("Failed to delete debate");
       setDebates((prev) => prev.filter((d) => d._id !== id));
@@ -584,7 +805,11 @@ setMessagesByDebate((prev) => {
       });
       if (currentDebateId === id) setCurrentDebateId(null);
     } catch (err) {
+<<<<<<< HEAD
 
+=======
+      
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
       setToast({ type: "error", text: "Failed to delete debate." });
     }
   };
@@ -603,9 +828,13 @@ setMessagesByDebate((prev) => {
   };
 
   return (
+<<<<<<< HEAD
     <div className="flex h-screen overflow-hidden font-sans text-gray-100 bg-black">
 
 
+=======
+    <div className="flex h-screen font-sans text-gray-100 bg-black">
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
       <Sidebar
         debates={debates
           .slice()
@@ -620,6 +849,7 @@ setMessagesByDebate((prev) => {
               d.debateStatus === "active"
                 ? "active"
                 : d.debateStatus === "end"
+<<<<<<< HEAD
                   ? "end"
                   : "inactive",
             full: d,
@@ -630,6 +860,13 @@ setMessagesByDebate((prev) => {
    
 }}
 
+=======
+                ? "end"
+                : "inactive",
+            full: d,
+          }))}
+        onSelectDebate={(debate) => setCurrentDebateId(debate.id || debate._id)}
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
         onNewDebate={handleNewChat}
         onDeleteDebate={(id) => deleteDebate(id)}
         currentDebateId={currentDebateId}
@@ -637,16 +874,20 @@ setMessagesByDebate((prev) => {
         onLogout={onLogout}
         setLoggedIn={setLoggedIn}
         refreshSidebarAfterMessage={refreshSidebarAfterMessage}
+<<<<<<< HEAD
         setShowArchived={setShowArchivedPopup}
         fetchArchivedDebates={fetchArchivedDebates}
         onArchiveDebate={archiveDebate}
         onShowAnalysis={openAnalysis}
+=======
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
       />
 
       <div className="flex-1 flex flex-col">
         <TopBar
           name="WinMe"
           onToggleSidebar={() => setSidebarOpen((v) => !v)}
+<<<<<<< HEAD
          onDelete={() => {
   if (!currentDebate()) {
     return setToast({ type: "error", text: "No debate selected." });
@@ -696,6 +937,15 @@ setMessagesByDebate((prev) => {
 }}
 
 
+=======
+          onDelete={() =>
+            currentDebate()
+              ? deleteDebate(currentDebate().id || currentDebate()._id)
+              : setToast({ type: "error", text: "No debate selected." })
+          }
+          onArchive={()=>{setToast({ type: "info", text: "Archive feature coming soon" })}}
+          onShare={()=>{setToast({ type: "info", text: "Share feature coming soon" })}}
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
           hasDebate={!!currentDebateId}
         />
 
@@ -705,6 +955,7 @@ setMessagesByDebate((prev) => {
           onSend={(text) => sendMessage(currentDebateId, text)}
           isNewChat={!currentDebateId}
           onNewChat={handleNewChat}
+<<<<<<< HEAD
 
         />
       </div>
@@ -905,6 +1156,13 @@ setMessagesByDebate((prev) => {
 
 
       <Toast toast={toast} setToast={setToast} />
+=======
+          
+        />
+      </div>
+
+      <Toast toast={toast} setToast={setToast}/>
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
     </div>
   );
 }

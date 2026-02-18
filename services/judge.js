@@ -1,9 +1,13 @@
+<<<<<<< HEAD
 
 import dotenv from "dotenv";
 dotenv.config();
 
 import Groq from "groq-sdk";
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+=======
+import fetch from "node-fetch";
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
 
 /**
  * Ask the judge model to decide who won.
@@ -26,9 +30,12 @@ Score **each debater** on:
 • you may include other parameters if you want to judge effectively.
 • minus points for tracking off-topic, abusing words personal attacks.
 • make total points out of 100 (ex:like if you consider 4 paramters you may choose for logic 40 points,for evidance 30 points,... this is only example).
+<<<<<<< HEAD
 .like this Debater	Logic (40)	Evidence (30)	Argumentation (30)	TOTAL (100)
  Pro (USER)	0	0	0	0
  Con (WinMe Debater)	35	28	27	90
+=======
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
 Instructions:
 1. Read the full debate transcript below.
 2. Provide a table with scores for each side: Logic / Evidence / Argumentation.
@@ -39,6 +46,7 @@ Debate Transcript:
 ${debateHistory}
 `;
 
+<<<<<<< HEAD
   const model = process.env.JUDGE_MODEL || "llama-3.1-70b-versatile";
 
     const completion = await groq.chat.completions.create({
@@ -53,6 +61,29 @@ ${debateHistory}
     const reply = completion.choices?.[0]?.message?.content.trim() || "…";
 
   const verdict = reply||"No verdict returned by judge.";
+=======
+  const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`
+    },
+    body: JSON.stringify({
+      model: "gpt-4.1-mini",
+      max_tokens: 800,   
+      messages: [
+        { role: "system", content: "You are a neutral, concise debate judge." },
+        { role: "user", content: judgePrompt }
+      ],
+      temperature: 0
+    })
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(`HTTP ${res.status}: ${JSON.stringify(data)}`);
+
+  const verdict = data.choices?.[0]?.message?.content?.trim() || "No verdict.";
+>>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
   return { verdict };}
   catch(err){
       throw { error: "ai_error", service: "judge", message: "Failed to get AI response. Please retry." };
