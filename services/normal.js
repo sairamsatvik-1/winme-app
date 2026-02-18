@@ -1,21 +1,15 @@
-<<<<<<< HEAD
-
 import Groq from "groq-sdk";
 import dotenv from "dotenv";
 dotenv.config();
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-=======
-import fetch from "node-fetch";
->>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
 function extractJsonIfPresent(text) {
   const match = text.match(/\{[\s\S]*\}/); // find first {...} block
   if (match) {
     try {
       return JSON.parse(match[0]); // parse the JSON block only
     } catch (e) {
-      
       return null;
     }
   }
@@ -63,55 +57,8 @@ Example responses:
 23. you don't made any arguments or debate points, you only respond to user messages and ask for topic and stance of debate.
 
 Tone: ruthless, cold, assertive, aggressive, authoritative, intimidating.
-<<<<<<< HEAD
-Formatting (MANDATORY):
-"Provide response in markdown format. Use headers for sections, bullet points for lists. Ensure the response is suitable for rendering in a chat interface with dark theme styling."
-- Use headings (##, ###) for sections.
-- Use '-' for bullet points ONLY. Never use '.' as bullet.
-- Use **bold** for key claims when needed.
-- Use **italics** for punch lines or analogies when needed.
-- Add a blank line between sections.
-
-=======
->>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
 `;
 
-// export async function generalChat(userMsg, generalMessages) {
-//      if (generalMessages.length === 0) {
-//     generalMessages.push({ role: "system", content: generalSystemPrompt });
-//   }
-//   generalMessages.push({ role: "user", content: userMsg });
-
-//   const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//       "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`
-//     },
-//     body: JSON.stringify({
-//       model: "gpt-4o-mini",
-//       messages: generalMessages,
-//       temperature: 0
-//     })
-//   });
-
-//   const data = await res.json();
-//   if (!res.ok) throw new Error(`HTTP ${res.status}: ${JSON.stringify(data)}`);
-
-//   const reply = data.choices?.[0]?.message?.content || "…";
-//   let debateIntent = null;
-// const parsed = extractJsonIfPresent(reply);
-// if (parsed && parsed.intent === "debate") {
-//   debateIntent = parsed;
-//   // Do NOT push JSON to generalMessages
-//   return { reply: JSON.stringify(parsed), updatedMessages: generalMessages, debateIntent };
-// }
-
-// // For normal general chat, push reply
-// generalMessages.push({ role: "assistant", content: reply });
-// return { reply, updatedMessages: generalMessages, debateIntent };
-
-// }
 export async function generalChat(userMsg, generalMessages) {
   if (!generalMessages.length) {
     generalMessages.push({ role: "system", content: generalSystemPrompt });
@@ -120,58 +67,42 @@ export async function generalChat(userMsg, generalMessages) {
   generalMessages.push({ role: "user", content: userMsg });
 
   try {
-<<<<<<< HEAD
-     const model = process.env.GENERAL_MODEL || "llama-3.1-70b-versatile";
+    const model = process.env.GENERAL_MODEL || "llama-3.1-70b-versatile";
 
     const completion = await groq.chat.completions.create({
       model,
       messages: generalMessages,
       temperature: 0,
-      max_tokens: 600, // IMPORTANT: keep low
+      max_tokens: 600,
     });
 
     const reply = completion.choices?.[0]?.message?.content || "…";
 
-=======
-    const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: generalMessages,
-        temperature: 0
-      })
-    });
-
-    const data = await res.json();
-    if (!res.ok) throw new Error(`HTTP ${res.status}: ${JSON.stringify(data)}`);
-
-    const reply = data.choices?.[0]?.message?.content || "…";
->>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
-
     // Extract debate intent if JSON is present
     let debateIntent = null;
     const parsed = extractJsonIfPresent(reply);
+
     if (parsed && parsed.intent === "debate") {
       debateIntent = parsed;
-      
+
       // Do NOT push JSON to generalMessages
-      return { reply: "debate intent detected,make your argument", updatedMessages: generalMessages, debateIntent };
+      return {
+        reply: "debate intent detected,make your argument",
+        updatedMessages: generalMessages,
+        debateIntent,
+      };
     }
 
     // Push normal AI reply to conversation
     generalMessages.push({ role: "assistant", content: reply });
-    return { reply, updatedMessages: generalMessages, debateIntent };
 
+    return { reply, updatedMessages: generalMessages, debateIntent };
   } catch (err) {
-   
-<<<<<<< HEAD
-    throw { error: "ai_error", service: "general", message: "Failed to get AI response. Please retry." ,err};
-=======
-    throw { error: "ai_error", service: "general", message: "Failed to get AI response. Please retry." };
->>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
+    throw {
+      error: "ai_error",
+      service: "general",
+      message: "Failed to get AI response. Please retry.",
+      err,
+    };
   }
 }

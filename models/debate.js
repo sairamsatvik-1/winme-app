@@ -14,16 +14,15 @@ const debateSchema = new mongoose.Schema({
   rounds: { type: Number, default: 10 },
   currentRound: { type: Number, default: 0 },
   debateStatus: { type: String, default: "inactive" },
-<<<<<<< HEAD
+
   judgeResult: { type: Object, default: null },
   shareId: { type: String, unique: true, sparse: true },
   isShared: { type: Boolean, default: false },
   isArchived: { type: Boolean, default: false },
 archivedAt: { type: Date, default: null },
 
-=======
   judgeResult: { type: Object, default: null }
->>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
+
 }, { timestamps: true });
 
 export default mongoose.model("Debate", debateSchema);
