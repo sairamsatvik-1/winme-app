@@ -7,7 +7,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 const AuthPage = ({ setLoggedIn,setUser }) => {
    const [csrfToken, setCsrfToken] = useState(sessionStorage.getItem("csrfToken") || null);
   
-<<<<<<< HEAD
  const getCsrfToken = async () => {
   const stored = sessionStorage.getItem("csrfToken");
   if (stored) return stored;
@@ -24,20 +23,6 @@ const AuthPage = ({ setLoggedIn,setUser }) => {
   }
 };
 
-=======
-  const getCsrfToken = async () => {
-    if (csrfToken) return csrfToken;
-    try {
-      const res = await fetch(`${API_BASE}/api/csrf-token`, { credentials: "include" });
-      const data = await res.json();
-      setCsrfToken(data.csrfToken);
-      sessionStorage.setItem("csrfToken", data.csrfToken);
-      return data.csrfToken;
-    } catch (err) {
-      toast.error("CSRF token fetch failed");
-    }
-  };
->>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
   const [isLogin, setIsLogin] = useState(true);
   const [otpMode, setOtpMode] = useState(false);
   const [forgotMode, setForgotMode] = useState(false);
@@ -112,11 +97,7 @@ const handleSubmit = async (e) => {
       if (res.ok) {
         setFormData(emptyForm);
         toast.success("Welcome back!");
-<<<<<<< HEAD
        await getCsrfToken();
-=======
-        sessionStorage.setItem('csrfToken', data.csrfToken);
->>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
         setUser(data.user); // set user data
         
         setLoggedIn(true);

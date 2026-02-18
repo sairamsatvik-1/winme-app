@@ -83,13 +83,9 @@ useEffect(() => {
   const noMessages = !messages || messages.length === 0;
 
   return (
-<<<<<<< HEAD
     <div className="flex-1 min-h-0 flex flex-col bg-[#1f1f1f] text-white relative overflow-hidden">
 
 
-=======
-    <div className="flex-1 flex flex-col bg-[#1f1f1f] text-white h-full relative overflow-hidden">
->>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
       <Toast toast={toast} setToast={setToast} />
       {debate && <StatusBar status={debate.debateStatus} showToast={setToast} />}
       {debate && (
@@ -101,13 +97,8 @@ useEffect(() => {
         />
       )}
 
-<<<<<<< HEAD
       <div className="flex-1 min-h-0 overflow-y-auto px-4 sm:px-12 pt-6 pb-24 relative z-0 custom-scrollbar">
         <div className="max-w-4xl mx-auto flex flex-col gap-6">
-=======
-      <div className="flex-1 overflow-y-auto px-4 sm:px-12 pt-6 pb-24 relative z-0 custom-scrollbar">
-        <div className="max-w-3xl mx-auto flex flex-col gap-6">
->>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
           {noMessages ? (
             <>
               {/* 👇 New Chat Welcome with Image and Typing Text */}
@@ -176,11 +167,7 @@ useEffect(() => {
           ) : (
             <>
               {messages.map((msg, i) => (
-<<<<<<< HEAD
                 <MessageBubble key={i} role={msg.role} text={msg.text} isStreaming={msg.isStreaming} />
-=======
-                <MessageBubble key={i} role={msg.role} text={msg.text} />
->>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
               ))}
               <div ref={messagesEndRef} />
             </>
@@ -191,11 +178,7 @@ useEffect(() => {
       {/* Bottom sticky input for ongoing debates */}
       {!noMessages && (
         <div className="sticky bottom-0 left-0 right-0 bg-[#1f1f1f]/95 backdrop-blur-md z-10">
-<<<<<<< HEAD
           <div className="max-w-4xl mx-auto w-full px-4 py-3 flex items-center">
-=======
-          <div className="max-w-3xl mx-auto w-160 px-4 py-3 flex items-center">
->>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
             <div className="relative flex-1">
               <textarea
                 ref={inputRef}

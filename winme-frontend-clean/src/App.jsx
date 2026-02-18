@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from "react";
-<<<<<<< HEAD
 import { Routes, Route, Navigate } from "react-router-dom";
 import SharedDebate from "./pages/SharedDebate";
 
-=======
->>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
 import AuthPage from "./components/AuthPage";
 import DebateApp from "./components/DebateApp";
 import Toast from "./components/Toast";
@@ -95,8 +92,8 @@ const handleLogout = async () => {
     );
 
   return (
-  <>
-<<<<<<< HEAD
+  <>{toast && <Toast {...toast} onClose={() => setToast(null)} />}
+
     <Routes>
       {/* shared page should be public */}
       <Route path="/share/:shareId" element={<SharedDebate />} />
@@ -116,15 +113,7 @@ const handleLogout = async () => {
       {/* fallback */}
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
+    </>
+ );
 
-=======
-    {loggedIn ? (
-      <DebateApp setLoggedIn={setLoggedIn} user={user} onLogout={handleLogout} />
-    ) : (
-      <AuthPage setLoggedIn={setLoggedIn} setUser={setUser} />
-    )}
->>>>>>> 84b993ba91159a3f1950897d37027ffa49bba24d
-    <Toast toast={toast} setToast={setToast} />
-  </>
-);
 }

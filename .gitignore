@@ -27,4 +27,5 @@ node_modules
 .env
 winme-frontend-clean/node_modules
 
+CHECK.PY
 
